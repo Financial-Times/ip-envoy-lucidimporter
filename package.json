@@ -1,5 +1,5 @@
 {
-  "name": "@financial-times/ip-envoy-lucidChart",
+  "name": "@financial-times/ip-envoy-lucidchart",
   "version": "0.0.0",
   "description": "CSV importer",
   "main": "index.js",

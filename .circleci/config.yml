@@ -80,7 +80,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/project/.npmrc
       - run:
           name: Publish to npm
-          command: npm publish --access public
+          command: npm version --no-git-tag-version && npm publish --access public
 
 workflows:
   version: 2
