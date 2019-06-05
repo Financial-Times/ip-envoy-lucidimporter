@@ -2,7 +2,6 @@
 const _ = require('lodash');
 const { promisify } = require('util');
 // const logger } = require('../.logger');
-// const config = require('../../../config.js');
 
 function resolveTemplate(str, vars) {
   // based on code pinched from: https://github.com/mikemaccana/dynamic-template/blob/master/index.js

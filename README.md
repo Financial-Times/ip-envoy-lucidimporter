@@ -1,1 +1,1 @@
-# Lucid Char Importer
+# Lucid Chart Importer
