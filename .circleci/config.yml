@@ -47,7 +47,7 @@ jobs:
           name: Install dependencies
           command: npm install
 
-      #- *cache_node_dependencies
+      - *cache_node_dependencies
 
       - persist_to_workspace:
           root: *workspace_root
@@ -61,9 +61,6 @@ jobs:
       - run:
           name: npm auth
           command: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/project/.npmrc
-      - run:
-          name: clean cache
-          command: npm cache clear && npm cache verify
       - run:
           name: Publish to npm
           command: npm version --no-git-tag-version ${CIRCLE_TAG} && npm publish --access public
