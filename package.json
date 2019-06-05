@@ -1,5 +1,5 @@
 {
-  "name": "@financial-times/ip-envoy-lucidchart",
+  "name": "@financial-times/ip-envoy-lucidimporter",
   "version": "0.0.0",
   "description": "Lucid chart importer",
   "main": "index.js",
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Financial-Times/ip-envoy-lucidchart.git"
+    "url": "git@github.com:Financial-Times/ip-envoy-lucidimporter.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Financial-Times/ip-envoy-lucidchart/issues"
+    "url": "https://github.com/Financial-Times/ip-envoy-lucidimporter/issues"
   },
-  "homepage": "https://github.com/Financial-Times/ip-envoy-lucidchart#readme",
+  "homepage": "https://github.com/Financial-Times/ip-envoy-lucidimporter#readme",
   "devDependencies": {
     "jest": "^23.6.0"
   },
