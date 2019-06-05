@@ -54,23 +54,6 @@ jobs:
           paths:
             - .
 
-  #test:
-   # <<: *default_container_config
-    #steps:
-     # - *attach_workspace
-
-      #- run:
-       #   name: Run tests
-        #  command: make test
-  #verify:
-   # <<: *default_container_config
-    #steps:
-     # - *attach_workspace
-
-      #- run:
-       #   name: Run tests
-        #  command: make verify -j 3
-
   release:
     <<: *default_container_config
     steps:
@@ -89,17 +72,6 @@ workflows:
       - install:
           filters:
             <<: *triggerable-by-tag
-      #- test:
-       #   requires:
-        #    - install
-         # filters:
-          #  <<: *triggerable-by-tag
-      #- verify:
-       #   context: rel-eng-creds
-        #  requires:
-         #   - install
-          #filters:
-           # <<: *triggerable-by-tag
       - release:
           requires:
             - install
