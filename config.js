@@ -1,3 +1,4 @@
+const config = exports;
 const entityType = 'user';
 // Database
 if (entityType === 'user') {
