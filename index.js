@@ -1,7 +1,7 @@
 
 const _ = require('lodash');
 const { promisify } = require('util');
-// const logger } = require('../.logger');
+const connectDB = require('./lib/connect');
 
 function resolveTemplate(str, vars) {
   // based on code pinched from: https://github.com/mikemaccana/dynamic-template/blob/master/index.js
@@ -15,8 +15,8 @@ function resolveTemplate(str, vars) {
     const templateFunction = new Function(...keys, `return \`${str}\`;`); // eslint-disable-line no-new-func
     return templateFunction(...values);
   } catch (e) {
-    //logger.error(`string fed into resolveTemple was ${str}`);
-    //logger.error(`keys fed into resolveTemple were ${keys}`);
+    console.log(`string fed into resolveTemple was ${str}`);
+    console.log(`keys fed into resolveTemple were ${keys}`);
 
     throw e;
   }
@@ -71,9 +71,12 @@ module.exports = {
         return false;
       }
       if (typeof this.handlers[type] !== 'function') {
-        //logger.warn(`There is no data importer for object type "${type}"`);
-        //logger.warn('Please check your Lucid diagram or extend the import library for');
-        //logger.warn('your new object');
+        console.log(`There is no data importer for object type "${type}"`);
+        console.log('Please check your Lucid diagram or extend the import library for');
+        console.log('your new object');
+        console.log(`There is no data importer for object type "${type}"`);
+        console.log('Please check your Lucid diagram or extend the import library for');
+        console.log('your new object');
         return false;
       }
       const typeTarget = this.getBranch(type);
@@ -319,8 +322,8 @@ module.exports = {
       this.lucidColletion[bank].byTarget = newTags;
     },
 
-    async prepare(knexConnection) {
-      const knexConnectionAsync = promisify(knexConnection);
+    async prepare() {
+      const knexConnectionAsync = promisify(connectDB);
 
       const lc = this.lucidColletion;
 
@@ -328,7 +331,7 @@ module.exports = {
       // This is the ideal place to do any manipulation prior to writing to the db
       // For example, unpacking any classes present in the chart
 
-  //logger.info('Checking if any of the tracks already exist...');
+      console.log('Checking if any of the tracks already exist...');
       const trackNames = lc.trackcontainer.map((track) => track.name);
       const res = await knexConnectionAsync.select('*').from('core.track').whereIn('name', trackNames);
       const existingTrackNames = res.map((dbTrack) => dbTrack.name);
@@ -337,28 +340,28 @@ module.exports = {
         .some((existingTrackName) => existingTrackName === trackNameIn.name));
 
       if (!lc.trackcontainer.length) {
-        //logger.info('No new tracks to import');
+        console.log('No new tracks to import');
         return false;
       }
 
       // Arrow forking/converging:
-      //logger.info('Processing any converging or forking arrows...');
+      console.log('Processing any converging or forking arrows...');
       this.arrowJoiner('_connections');
       this.arrowJoiner('_inputs');
 
       this.lucidCollectionPreped = _.cloneDeep(lc); // manipulator target
       // Class Mangling:
-      //logger.info('Seeing if there are any classes to mangle...');
+      console.log('Seeing if there are any classes to mangle...');
       if (!lc.ref && !lc.class) {
-        //logger.info('No classes found in this chart, moving on...');
+        console.log('No classes found in this chart, moving on...');
         return true;
       }
-  //logger.info('Yes there are, let\'s get mangling...');
+      console.log('Yes there are, let\'s get mangling...');
 
       // we have new objects to create so find the current max Id as starting point
       const divertionMap = {}; // map old ids to new instance ids
       const classObjects = ['Boundary', 'Silo', 'RuleSet', 'Channel'];
-      //logger.info('copying classes...');
+      console.log('copying classes...');
 
       classObjects.forEach((objType) => {
         const dm = this.copyClassObjects(objType, divertionMap);
@@ -369,10 +372,10 @@ module.exports = {
           });
         });
       });
-      //logger.info('Diverting arrows to new class instances...');
+      console.log('Diverting arrows to new class instances...');
       this.divertArrows(divertionMap, '_connections');
       this.divertArrows(divertionMap, '_inputs');
-      //logger.info('Class mangling complete');
+      console.log('Class mangling complete');
       return true;
     },
 
@@ -396,13 +399,13 @@ module.exports = {
 
         // Arrows must point only one way
         if ((data['Source Arrow'] === 'Arrow') && (data['Destination Arrow'] === 'Arrow')) {
-      //logger.warn('Arrow ignored - direction is ambigous');
+        console.log('Arrow ignored - direction is ambigous');
           return false;
         }
 
         // Arrows must point, otherwise its just a line
         if ((data['Source Arrow'] === 'None') && (data['Destination Arrow'] === 'None')) {
-      //logger.warn('Line ignored - line is not an arrow - no relationship created');
+        console.log('Line ignored - line is not an arrow - no relationship created');
           return false;
         }
 
@@ -445,8 +448,8 @@ module.exports = {
           && (arrowFromType !== 'Channel')
           && (arrowFromType !== 'Boundary')
           && (arrowFromType !== 'Connector')) {
-      //logger.warn('Arrow ignored - arrows must point from RuleSets, Silos or Channels');
-      //logger.warn(`Found arrow that pointed from ${arrowFromType}`);
+      console.log('Arrow ignored - arrows must point from RuleSets, Silos or Channels');
+      console.log(`Found arrow that pointed from ${arrowFromType}`);
           return false;
         }
 
@@ -455,17 +458,17 @@ module.exports = {
           && (arrowToType !== 'Silo')
           && (arrowToType !== 'Channel')
           && (arrowToType !== 'Connector')) {
-      //logger.warn('Arrow ignored - arrows must point to RuleSets, Silos or Channels');
-      //logger.warn(`Found arrow that pointed to ${arrowToType}`);
+            console.log('Arrow ignored - arrows must point to RuleSets, Silos or Channels');
+            console.log(`Found arrow that pointed to ${arrowToType}`);
           return false;
         }
 
         if (arrowToType === '') {
-      //logger.warn('Arrow must point to something - ignored');
+          console.log('Arrow must point to something - ignored');
           return false;
         }
         if (arrowToType === '') {
-      //logger.warn('Arrow must point from something - ignored');
+          console.log('Arrow must point from something - ignored');
           return false;
         }
 
@@ -475,7 +478,7 @@ module.exports = {
           && (arrowToType !== 'Silo')
           && (arrowToType !== 'Connector') // This is now allowed, shorthand for autoPass rule
           && (arrowToType !== 'Channel')) {
-      //logger.error(`Arrow points from a ${arrowFromType} (${arrowFromName}) to a ${arrowToType} (${arrowToName})`);
+            console.log(`Arrow points from a ${arrowFromType} (${arrowFromName}) to a ${arrowToType} (${arrowToName})`);
           return false;
         }
 
@@ -483,7 +486,7 @@ module.exports = {
         if ((arrowFromType === 'RuleSet')
           && (arrowToType !== 'Connector') // This is now allowed, shorthand for autoPass rule
           && (arrowToType !== 'Silo')) {
-      //logger.error(`Arrow points from a ${arrowFromType} (${arrowFromName}) to a ${arrowToType} (${arrowToName})`);
+            console.log(`Arrow points from a ${arrowFromType} (${arrowFromName}) to a ${arrowToType} (${arrowToName})`);
           return false;
         }
 
@@ -512,13 +515,13 @@ module.exports = {
 
         // Arrows must point only one way
         if ((data['Source Arrow'] === 'Arrow') && (data['Destination Arrow'] === 'Arrow')) {
-      //logger.warn('Input arrow ignored - direction is ambigous - it should point to the rule');
+          console.log('Input arrow ignored - direction is ambigous - it should point to the rule');
           return false;
         }
 
         // Arrows must point, otherwise its just a line
         if ((data['Source Arrow'] === 'None') && (data['Destination Arrow'] === 'None')) {
-      //logger.warn('Line ignored - line is not an arrow but its marked as an input - no relationship created');
+          console.log('Line ignored - line is not an arrow but its marked as an input - no relationship created');
           return false;
         }
 
@@ -559,23 +562,23 @@ module.exports = {
         const arrowFromType = lucidColletion.index[data['Line Source']].type;
 
         if ((arrowFromType !== 'Silo') && (arrowFromType !== 'Connector')) {
-      //logger.warn('Input arrow ignored - input arrows must point from Silos');
-      //logger.warn(`Found input arrow that points from a ${arrowFromType}`);
+          console.log('Input arrow ignored - input arrows must point from Silos');
+          console.log(`Found input arrow that points from a ${arrowFromType}`);
           return false;
         }
         const arrowToType = lucidColletion.index[data['Line Destination']].type;
         if ((arrowToType !== 'RuleSet') && (arrowToType !== 'Connector')) {
-      //logger.warn('Input arrow ignored - input arrows must point to RuleSets or connector');
-      //logger.warn(`Found input arrow that pointed to ${arrowFromType}`);
+          console.log('Input arrow ignored - input arrows must point to RuleSets or connector');
+          console.log(`Found input arrow that pointed to ${arrowFromType}`);
           return false;
         }
 
         if (arrowToType === '') {
-      //logger.warn('Input arrow must point to something - ignored');
+          console.log('Input arrow must point to something - ignored');
           return false;
         }
         if (arrowFromType === '') {
-      //logger.warn('Input arrow must point from something - ignored');
+          console.log('Input arrow must point from something - ignored');
           return false;
         }
 
@@ -772,7 +775,7 @@ module.exports = {
           WHERE track."trackId" = ?
           `, [trackRevId, trackId]);
       } catch (e) {
-    //logger.error(e);
+        console.log(e);
       }
       return true;
     },
@@ -800,7 +803,7 @@ module.exports = {
       let trackRevId;
       if (res2.length) { // record exists, so return id
         trackRevId = false;
-    //logger.warn(`Track already exists with name "${track.name}" - not re-importing`);
+        console.log(`Track already exists with name "${track.name}" - not re-importing`);
       } else {
         [trackRevId] = (await this.knexConnectionAsync.insert([{
           trackId: dbTrackId,
@@ -942,8 +945,8 @@ module.exports = {
           channel.dbId = await this.haveChannel(channel);
         }
       } else {
-    //logger.warn('*** Importing a track that has no channels! ***');
-    //logger.warn('This is probably not what you want in a production system');
+        console.log('*** Importing a track that has no channels! ***');
+        console.log('This is probably not what you want in a production system');
       }
 
       for (const campaign of lucidColletion.campaigncontainer) {
@@ -1102,7 +1105,7 @@ module.exports = {
         }
         trackNameExisting = trackName;
       });
-  //logger.info(op);
+      console.log(op);
     }
   }
 };
