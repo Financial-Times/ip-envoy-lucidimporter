@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/Financial-Times/ip-envoy-lucidimporter#readme",
   "scripts": {
-    "start": "VAULT_PATH=secret/teams/internal-products/ip-envoy-lucidimporter/prod  node --require @financial-times/vaultenv"
+    "start": "VAULT_PATH=secret/teams/internal-products/ip-envoy-lucidimporter/prod node --require @financial-times/vaultenv index.js"
   },
   "devDependencies": {
     "jest": "^23.6.0"
