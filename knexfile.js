@@ -3,6 +3,7 @@ const config = require('./config');
 module.exports = {
   production: {
     client: 'pg',
-    connection: `${config.pg_host}`,
+    debug: true,
+    connection: `${config.pg_host}?ssl=true`
   }
 };
