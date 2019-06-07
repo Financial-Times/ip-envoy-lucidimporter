@@ -42,10 +42,12 @@ jobs:
       - checkout
 
       - *restore_node_dependencies
+      - run: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Install dependencies
-          command: npm install
+          command: npm install --unsafe-perm
       - run: snyk test
+
       - *cache_node_dependencies
 
       - persist_to_workspace:
