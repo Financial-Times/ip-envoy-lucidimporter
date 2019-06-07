@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/Financial-Times/ip-envoy-lucidimporter#readme",
   "scripts": {
-    "prepare": "snyk protect"
+    "prepare": "snyk protect",
+    "test": "snyk test"
   },
   "devDependencies": {
     "@financial-times/secret-squirrel": "^2.12.3",
