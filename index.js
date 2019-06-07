@@ -1,7 +1,7 @@
 
 const _ = require('lodash');
 const { promisify } = require('util');
-const connectDB = require('./lib/connect');
+const knex = require('./lib/connect');
 
 function resolveTemplate(str, vars) {
   // based on code pinched from: https://github.com/mikemaccana/dynamic-template/blob/master/index.js
@@ -323,7 +323,7 @@ module.exports = {
     },
 
     async prepare() {
-      const knexConnectionAsync = promisify(connectDB);
+      const knexConnectionAsync = promisify(knex);
 
       const lc = this.lucidColletion;
 
