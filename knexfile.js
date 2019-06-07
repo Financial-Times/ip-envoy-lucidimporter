@@ -1,10 +1,8 @@
 const config = require('./config');
 
-const client = 'pg';
-
 module.exports = {
   production: {
-    client,
-    connection: `${config.pg_host}?ssl=true`,
+    client: 'pg',
+    connection: 'postgres://c4_admin:examplePassword@localhost:5433/c4',
   }
 };
