@@ -43,9 +43,7 @@ jobs:
 
       - *restore_node_dependencies
       - run: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
-      - run:
-          name: Install dependencies
-          command: npm install --unsafe-perm
+      - run: npm install --unsafe-perm
       - run: snyk test
 
       - *cache_node_dependencies
@@ -59,12 +57,8 @@ jobs:
     <<: *default_container_config
     steps:
       - *attach_workspace
-      - run:
-          name: npm auth
-          command: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/project/.npmrc
-      - run:
-          name: Publish to npm
-          command: npm version --no-git-tag-version ${CIRCLE_TAG} && npm publish --access public
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ~/project/.npmrc
+      - run: npm version --no-git-tag-version ${CIRCLE_TAG} && npm publish --access public
 
 workflows:
   version: 2
