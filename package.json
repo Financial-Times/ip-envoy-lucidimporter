@@ -16,10 +16,6 @@
   "bugs": {
     "url": "https://github.com/Financial-Times/ip-envoy-lucidimporter/issues"
   },
-  "scripts": {
-    "start": "npm run index",
-    "index": "node index.js"
-  },
   "homepage": "https://github.com/Financial-Times/ip-envoy-lucidimporter#readme",
   "devDependencies": {
     "jest": "^23.6.0"
