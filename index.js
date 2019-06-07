@@ -1,7 +1,6 @@
 
 const _ = require('lodash');
 const { promisify } = require('util');
-//const knex = require('./lib/connect');
 
 function resolveTemplate(str, vars) {
   // based on code pinched from: https://github.com/mikemaccana/dynamic-template/blob/master/index.js

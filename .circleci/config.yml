@@ -75,8 +75,6 @@ workflows:
       - release:
           requires:
             - install
-            #- test
-            #- verify
           filters:
             <<: *triggerable-by-tag
             branches:

@@ -25,10 +25,7 @@
     "jest": "^23.6.0"
   },
   "dependencies": {
-    "@financial-times/vaultenv": "^0.3.2",
-    "knex": "^0.17.3",
     "lodash": "^4.17.10",
-    "pg": "^7.11.0",
     "util": "^0.12.0"
   }
 }
