@@ -42,7 +42,7 @@ jobs:
       - checkout
 
       - *restore_node_dependencies
-
+      - run: snyk test
       - run:
           name: Install dependencies
           command: npm install
