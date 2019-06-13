@@ -4,7 +4,9 @@
   "description": "Lucid chart importer",
   "main": "src/index.js",
   "directories": {
-    "test": "test"
+    "test": "test",
+    "lib": "lib",
+    "src": "src"
   },
   "repository": {
     "type": "git",
