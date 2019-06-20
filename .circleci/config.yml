@@ -59,8 +59,7 @@ jobs:
   test:
     <<: *default_container_config
     steps:
-      - run: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
-      - run: npm install --unsafe-perm
+      - *attach_workspace
       - run: npm run test
       
   release:
