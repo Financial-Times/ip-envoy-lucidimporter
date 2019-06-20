@@ -6,12 +6,12 @@ const { preParser, dbBuilder } = require('../lib/parser')
 
 // const { result } = require('../out');
 describe('Testing parser', () => {
-  beforeAll(async(done) => {
-    await init();
-    done();
-  })
+  // beforeAll(async(done) => {
+  //   await init();
+  //   done();
+  // })
 
-  const importFile = `test.csv`;
+  const importFile = `./test/test.csv`;
   console.log(`Importing file: ${importFile}`);
   preParser.newCollection();
   fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
@@ -24,7 +24,6 @@ describe('Testing parser', () => {
   });
   
   it('should return false if the TYPE is empty and NAME is line ', () => {
-    const outPut = preParser.have(Row);
     expect(true).toEqual(true);
   });
 });
