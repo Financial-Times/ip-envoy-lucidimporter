@@ -10,7 +10,7 @@ describe('Testing parser', () => {
     init();
   });
 
-  after(() => knex.destroy())
+  afterAll(() => knex.destroy())
 
   const importFile = `./test/test.csv`;
   console.log(`Importing file: ${importFile}`);
