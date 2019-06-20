@@ -1,4 +1,35 @@
 const knex = require('knex');
 const knexConfig = require('../knexfile');
 
-module.exports= knex(knexConfig.test);
+const maxQueryTimeMillis = 2000;
+
+let connConfig;
+
+connConfig = knexConfig.test;
+
+
+const myKnex = knex(connConfig);
+
+const times = { };
+
+myKnex.on('query', (query) => {
+  const uid = query.__knexQueryUid;
+  times[uid] = process.hrtime();
+});
+
+myKnex.on('query-response', (response, query) => {
+  const uid = query.__knexQueryUid;
+  const totalHrTime = process.hrtime(times[uid]);
+  const totalTime = (totalHrTime[0] * 1000) + (totalHrTime[1] / 1000000);
+  if (totalTime > maxQueryTimeMillis) {
+    console.info({
+      event: 'SLOW_DB_QUERY',
+      sql: query.sql,
+      params: query.bindings,
+      queryTime: totalTime
+    });
+  }
+  delete times[uid];
+});
+
+module.exports = myKnex;
