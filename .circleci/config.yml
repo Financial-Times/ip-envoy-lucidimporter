@@ -71,7 +71,7 @@ jobs:
 
 workflows:
   version: 2
-  build-and-deploy:
+  test-build-and-deploy:
     jobs:
       - install:
           filters:

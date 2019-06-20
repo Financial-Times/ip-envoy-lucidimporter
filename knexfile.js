@@ -7,7 +7,7 @@ module.exports = {
     client,
     connection: `${process.env.DATABASE_URL}`,
     pool: {
-      min: 0,
+      min: 1,
       max: 1
     }
   }
