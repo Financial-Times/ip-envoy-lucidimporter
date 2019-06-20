@@ -10,6 +10,8 @@ describe('Testing parser', () => {
     init();
   });
 
+  afterAll()
+
   const importFile = `./test/test.csv`;
   console.log(`Importing file: ${importFile}`);
   preParser.newCollection();

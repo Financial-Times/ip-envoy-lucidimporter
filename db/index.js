@@ -36,7 +36,6 @@ async function init() {
       await drop();
     }
     await create();
-    await seed();
     console.log('New db schema created');
   } catch (err) {
     console.log('DB init error', err);
