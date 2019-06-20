@@ -16,7 +16,7 @@ async function exists() {
       WHERE schema_name = 'core'`);
     return (rs.rows[0].count === '1');
   } catch (err) {
-    logger.error(err);
+    console.log(err);
     return false;
   }
 }
