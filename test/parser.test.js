@@ -6,10 +6,10 @@ const { preParser, dbBuilder } = require('../lib/parser')
 
 // const { result } = require('../out');
 describe('Testing parser', () => {
-  // beforeAll(async(done) => {
-  //   await init();
-  //   done();
-  // })
+  beforeAll(async(done) => {
+    init();
+    done();
+  })
 
   const importFile = `./test/test.csv`;
   console.log(`Importing file: ${importFile}`);
