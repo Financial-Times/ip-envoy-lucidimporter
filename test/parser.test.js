@@ -1,10 +1,12 @@
 const fs = require('fs');
 const csv = require('csv-parser');
+const { init } = require('../db/index');
 const knex = require('../db/connect');
 const { preParser, dbBuilder } = require('../lib/parser')
 
 // const { result } = require('../out');
 describe('Testing parser', () => {
+  init();
   const importFile = `test.csv`;
   console.log(`Importing file: ${importFile}`);
   preParser.newCollection();

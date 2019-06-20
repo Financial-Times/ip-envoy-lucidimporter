@@ -21,7 +21,6 @@
   "homepage": "https://github.com/Financial-Times/ip-envoy-lucidimporter#readme",
   "scripts": {
     "prepare": "snyk protect",
-    "init": "node ./db/index.js",
     "test": "jest"
   },
   "devDependencies": {
