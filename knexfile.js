@@ -10,7 +10,7 @@ module.exports = {
       directory: path.join(__dirname, 'migrations')
     },
     pool: {
-      min: 1,
+      min: 0,
       max: 1
     }
   }
