@@ -19,7 +19,6 @@ describe('Testing parser', () => {
     if (await preParser.prepare(knex)) {
       await dbBuilder.make(preParser.lucidCollectionPreped, knex);
     }
-    callback();
   });
   
   it('should return false if the TYPE is empty and NAME is line ', () => {
