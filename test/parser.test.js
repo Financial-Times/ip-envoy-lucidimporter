@@ -6,8 +6,9 @@ const { preParser, dbBuilder } = require('../lib/parser')
 
 // const { result } = require('../out');
 describe('Testing parser', () => {
-  beforeAll(()=> {
-    init();
+  beforeAll(async (done)=> {
+    await init();
+    done();
   });
 
   // afterAll(() => knex.destroy())
