@@ -4,8 +4,6 @@ version: 2
 
 references:
   triggerable-by-tag: &triggerable-by-tag
-    # For a tag push unaffected by any filters, CircleCI skips the job
-    # https://circleci.com/docs/2.0/workflows/#git-tag-job-execution
     tags:
       only: /^v[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta)\.\d+)?$/
 
@@ -13,6 +11,12 @@ references:
     working_directory: ~/project
     docker:
       - image: circleci/node:8.10.0
+        environment:
+          DATABASE_URL: postgres://c4_admin:testpw@localhost:5432/c4test
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_DB: c4test
+          POSTGRES_USER: c4_admin
 
   npm_cache_key: &npm_cache_key
     v2-dependency-npm-{{ checksum "package-lock.json" }}
@@ -52,7 +56,15 @@ jobs:
           root: *workspace_root
           paths:
             - .
-
+  test:
+    <<: *default_container_config
+    steps:
+      - run: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
+      - run: npm install --unsafe-perm
+      - run: snyk test
+      - run: npm run init
+      - run: npm run test
+      
   release:
     <<: *default_container_config
     steps:
@@ -67,9 +79,15 @@ workflows:
       - install:
           filters:
             <<: *triggerable-by-tag
+      - test:
+          requires:
+            - install
+          filters:
+            <<: *triggerable-by-tag
       - release:
           requires:
             - install
+            - test
           filters:
             <<: *triggerable-by-tag
             branches:
