@@ -10,7 +10,7 @@ async function init() {
     if (await importFromLucidchart('test')) {
       console.debug('*** 4 - New tracks imported - validating database... ***');
     }
-  logger.debug('*** 5 - setup trigger system ... ***');
+  console.debug('*** 5 - setup trigger system ... ***');
   await db.initTriggers();
   console.debug('Ready.');
 }
