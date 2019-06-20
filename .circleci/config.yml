@@ -61,7 +61,6 @@ jobs:
     steps:
       - run: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
       - run: npm install --unsafe-perm
-      - run: snyk test
       - run: npm run init
       - run: npm run test
       
