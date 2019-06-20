@@ -7,5 +7,6 @@ describe('Test importer ', () => {
 
   it('return true', async done => {
     expect(true).toEqual(true);
+    done();
   })
 });

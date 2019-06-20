@@ -39,9 +39,6 @@ async function init(forceDrop = false) {
   try {
     const dbExists = await exists();
     if (dbExists) {
-      if ((!config.flushDB) && (!forceDrop)) { // nothing to do here then
-        return;
-      }
       await drop();
       console.log('existing schema flushed as requested in config');
     }
