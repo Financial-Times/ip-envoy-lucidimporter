@@ -12,7 +12,7 @@ async function init() {
     }
   logger.debug('*** 5 - setup trigger system ... ***');
   await db.initTriggers();
-  logger.debug('Ready.');
+  console.debug('Ready.');
 }
 
 module.exports = { init }
