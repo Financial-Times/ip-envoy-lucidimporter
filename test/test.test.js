@@ -7,33 +7,19 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function searchSilos(testFunctions) {
-  const query = await knex.raw(`
-    SELECT silo.name AS "siloName" from core.entity_silo as es
-    LEFT join core.silo as silo
-    ON silo."siloId" = es."siloId"
-    `);
-  const siloNames = query.rows.map((row) => row.siloName);
-  console.log('names: ', siloNames )
-  testFunctions(siloNames);
-}
-
 describe('Test importer ', () => {
   beforeAll(async (done) => {
-    jest.setTimeout(30000);
     await initialise();
     done();
   })
 
   it('it should return silo names containing SOURCE and DRAIN ', async done => {
-    console.log('knex connection: ', knex)
-    const query = await knex.raw(`
-    SELECT silo.name AS "siloName" from core.entity_silo as es
-    LEFT join core.silo as silo
-    ON silo."siloId" = es."siloId"
-    `);
-    const siloNames = query.rows.map((row) => row.siloName);
-    console.log('names: ', siloNames);
+    const rs = await knex.raw(`
+      SELECT COUNT(*)
+      FROM information_schema.schemata
+      WHERE schema_name = 'core'`);
+    console.log('track name:', rs.rows[0]);
+      // return (rs.rows[0].count === '1');
     expect(true).toEqual(true);
     done();
   })
