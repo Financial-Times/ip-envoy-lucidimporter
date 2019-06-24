@@ -21,22 +21,20 @@ describe('Test Lucid chart Importer ', () => {
   })
 
   it('it should return track name TEST and Track Status 2', async done => {
-    const query = 'SELECT name, trackStatusId FROM core.track;';
-    // const expected = {
-    //   trackStatusId: 2,
-    //   name: 'test'
-    // }
+    const query = 'SELECT core.track.name, core.track."trackStatusId" FROM core.track;';
+    const expected = {
+      name: 'test',
+      trackStatusId: 2
+    }
     
     await queryFactory(query, track => {
-      console.log(track)
-      expect(true).toEqual(true);
-      // expect(track[0]).toEqual(expected);
+      expect(track[0]).toEqual(expected);
     });
     done();
   })
   
   it('it should return silo SOURCE and DRAIN', async done => {
-    const query = 'SELECT name FROM core.silo;'
+    const query = 'SELECT core.silo.name FROM core.silo;'
     await queryFactory(query, siloNames => {
       const names = siloNames.map(silo => silo.name);
       expect(names).toEqual(expect.arrayContaining(['Source', 'Drain']));
