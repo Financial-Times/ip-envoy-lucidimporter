@@ -2,6 +2,8 @@ const waitForExpect = require('wait-for-expect');
 const { initialise } = require('../db/initialise');
 const knex = require('../db/connect')
 
+jest.setTimeout(30000);
+
 function delay(ms) {
   console.log(`Waiting for ${ms} milliseconds...`);
   return new Promise((resolve) => setTimeout(resolve, ms));
