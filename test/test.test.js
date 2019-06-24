@@ -34,7 +34,7 @@ describe('Test importer ', async () => {
   })
 
   afterAll(async (done) => {
-    delay(5);
+    delay(20);
     await knex.destroy();
     done();
   })
