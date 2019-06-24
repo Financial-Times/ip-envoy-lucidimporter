@@ -26,7 +26,8 @@ describe('Test importer ', async () => {
   })
 
   it('it should return silo names containing SOURCE and DRAIN ', async done => {
-    const siloNames = searchSilos((siloNames) => {
+    await searchSilos((siloNames) => {
+      console.log(siloNames);
       expect(siloNames).toEqual(expect.arrayContaining(['Source, Drain']));
     });
     done();
