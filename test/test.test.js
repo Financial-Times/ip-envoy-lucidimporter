@@ -1,3 +1,4 @@
+const waitForExpect = require('wait-for-expect');
 const { initialise } = require('../db/initialise');
 const knex = require('../db/connect')
 
@@ -6,16 +7,31 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function searchSilos(testFunctions) {
+  await waitForExpect(async () => {
+    const query = await knex.raw(`
+      SELECT silo.name AS "siloName" from core.entity_silo as es
+      LEFT join core.silo as silo
+      ON silo."siloId" = es."siloId"
+      `);
+    const siloNames = query.rows.map((row) => row.siloName);
+    testFunctions(siloNames);
+  }, 30000, 1000);
+}
+
 describe('Test importer ', async () => {
   beforeAll(async (done) => {
     await initialise();
     done();
   })
 
-  it('return true', async done => {
-    expect(true).toEqual(true);
+  it('it should return silo names containing SOURCE and DRAIN ', async done => {
+    const siloNames = searchSilos((siloNames) => {
+      expect(siloNames).toEqual(expect.arrayContaining(['Source, Drain']));
+    });
     done();
   })
+
   afterAll(async (done) => {
     delay(5);
     await knex.destroy();
