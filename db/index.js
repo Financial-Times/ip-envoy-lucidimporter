@@ -82,5 +82,4 @@ module.exports = {
   create,
   seed,
   importFromLucidchart
-  // initTriggers
 };

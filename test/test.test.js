@@ -6,9 +6,10 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-describe('Test importer ', () => {
-  beforeAll(() => {
-    init();
+describe('Test importer ', async () => {
+  beforeAll(async (done) => {
+    await init();
+    done();
   })
 
   it('return true', async done => {
@@ -17,7 +18,7 @@ describe('Test importer ', () => {
   })
   afterAll(async (done) => {
     delay(5);
-    // knex.destroy();
+    await knex.destroy();
     done();
   })
 });
