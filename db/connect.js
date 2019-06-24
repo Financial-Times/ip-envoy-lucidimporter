@@ -1,6 +1,8 @@
 const knex = require('knex');
 const knexConfig = require('../knexfile');
 
+const maxQueryTimeMillis = 2000;
+
 const myKnex = knex(knexConfig.test);
 
 const times = { };
