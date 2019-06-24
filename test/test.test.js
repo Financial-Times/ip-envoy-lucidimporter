@@ -14,7 +14,7 @@ describe('Test importer ', () => {
   })
 
   it('it should return silo names containing SOURCE and DRAIN ', async done => {
-    const rs = await knex.row(`SELECT * FROM core.track`);
+    const rs = await knex.raw(`SELECT * FROM core.track`);
     console.log('track name:', rs.rows[0]);
       // return (rs.rows[0].count === '1');
     expect(true).toEqual(true);
