@@ -15,7 +15,6 @@ async function searchSilos(testFunctions) {
       ON silo."siloId" = es."siloId"
       `);
     const siloNames = query.rows.map((row) => row.siloName);
-    console.log(siloNames);
     testFunctions(siloNames);
   }, 30000, 1000);
 }
@@ -27,14 +26,15 @@ describe('Test importer ', async () => {
   })
 
   it('it should return silo names containing SOURCE and DRAIN ', async done => {
-    await searchSilos((siloNames) => {
+    searchSilos((siloNames) => {
+      console.log(siloNames);
       expect(siloNames).toEqual(expect.arrayContaining(['Source', 'Drain']));
     });
     done();
   })
 
   afterAll(async (done) => {
-    delay(20);
+    delay(5);
     await knex.destroy();
     done();
   })
