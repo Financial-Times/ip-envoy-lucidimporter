@@ -33,8 +33,8 @@ describe('Test importer ', () => {
   })
 
   afterAll(async (done) => {
-    delay(5);
-    await knex.destroy();
-    done();
+    // delay(5);
+    // await knex.destroy();
+    // done();
   })
 });
