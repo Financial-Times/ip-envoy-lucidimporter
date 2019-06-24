@@ -7,6 +7,14 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Examine the channel sends log
+async function silos(testFunctions) {
+  await waitForExpect(async () => {
+    const query = await knex.raw(`SELECT * FROM core.track`);
+    testFunctions(query.rows);
+  }, 30000, 1000);
+}
+
 describe('Test importer ', () => {
   beforeAll(async (done) => {
     await initialise();
@@ -14,10 +22,11 @@ describe('Test importer ', () => {
   })
 
   it('it should return silo names containing SOURCE and DRAIN ', async done => {
-    const rs = await knex.raw(`SELECT * FROM core.track`);
-    console.log('track name:', rs.rows[0]);
-      // return (rs.rows[0].count === '1');
-    expect(true).toEqual(true);
+    await silos((siloNames) => {
+      console.log(siloNames);
+      expect(true).toEqual(true);
+      // expect(true).toEqual(expect.arrayContaining(['Entities', ' ']));
+    });
     done();
   })
 
