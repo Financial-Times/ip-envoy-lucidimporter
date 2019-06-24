@@ -36,7 +36,7 @@ describe('Test Lucid chart Importer ', () => {
     const query = 'SELECT core.silo.name FROM core.silo;'
     await queryFactory(query, siloNames => {
       const names = siloNames.map(silo => silo.name);
-      expect(names).toEqual(expect.arrayContaining(['Source', 'Shelf', 'Stage 1', 'Stage 2']));
+      expect(names).toEqual(expect.arrayContaining(['Source', 'Stage 1', 'Shelf']));
     });
     done();
   })
