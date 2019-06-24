@@ -1,4 +1,4 @@
-const { init } = require('../cron');
+const { initialise } = require('../db/initialise');
 const knex = require('../db/connect')
 
 function delay(ms) {
@@ -8,7 +8,7 @@ function delay(ms) {
 
 describe('Test importer ', async () => {
   beforeAll(async (done) => {
-    await init();
+    await initialise();
     done();
   })
 

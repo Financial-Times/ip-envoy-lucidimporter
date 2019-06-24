@@ -51,7 +51,7 @@ async function init(forceDrop = false) {
 }
 
 function importFromLucidchart(fileName, callback) {
-  const importFile = `./test/${fileName}.csv`;
+  const importFile = `./data/${fileName}.csv`;
   console.log(`Importing file: ${importFile}`);
   preParser.newCollection();
   fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
@@ -63,16 +63,6 @@ function importFromLucidchart(fileName, callback) {
     callback();
   });
 }
-
-// async function initTriggers() {
-//   const rawConn = await knex.client.acquireRawConnection();
-//   // This could be moved elsewhere
-//   rawConn.query('LISTEN monitor');
-//   rawConn.on('notification', async (msg) => {
-//     logger.debug('Database trigger test');
-//     logger.debug(msg);
-//   });
-// }
 
 module.exports = {
   init,
