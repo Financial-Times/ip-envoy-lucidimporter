@@ -19,14 +19,14 @@ async function searchSilos(testFunctions) {
   }, 30000, 1000);
 }
 
-describe('Test importer ', async () => {
+describe('Test importer ', () => {
   beforeAll(async (done) => {
     await initialise();
     done();
   })
 
   it('it should return silo names containing SOURCE and DRAIN ', async done => {
-    searchSilos((siloNames) => {
+    await searchSilos((siloNames) => {
       console.log(siloNames);
       expect(siloNames).toEqual(expect.arrayContaining(['Source', 'Drain']));
     });
