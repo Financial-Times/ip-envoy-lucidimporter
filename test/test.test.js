@@ -7,25 +7,37 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Examine the channel sends log
-async function silos(testFunctions) {
+async function queryFactory(testQuery , testFunctions) {
   await waitForExpect(async () => {
-    const query = await knex.raw(`SELECT * FROM core.track`);
+    const query = await knex.raw(`${testQuery}`);
     testFunctions(query.rows);
   }, 30000, 1000);
 }
 
-describe('Test importer ', () => {
+describe('Test Lucid chart Importer ', () => {
   beforeAll(async (done) => {
     await initialise();
     done();
   })
 
-  it('it should return silo names containing SOURCE and DRAIN ', async done => {
-    await silos((siloNames) => {
-      console.log(siloNames);
-      expect(true).toEqual(true);
-      // expect(true).toEqual(expect.arrayContaining(['Entities', ' ']));
+  it('it should return track name TEST and Track Status 2', async done => {
+    const query = 'SELECT name, trackStatusId FROM core.track';
+    const expected = {
+      trackStatusId: 2,
+      name: 'test'
+    }
+    
+    await queryFactory(query, track => {
+      expect(track[0]).toEqual(expected);
+    });
+    done();
+  })
+  
+  it('it should return silo SOURCE and DRAIN', async done => {
+    const query = 'SELECT name FROM core.silo'
+    await queryFactory(query, names => {
+      console.log(names);
+      expect(names).toEqual(expect.arrayContaining(['Source ', 'Drain ']));
     });
     done();
   })
