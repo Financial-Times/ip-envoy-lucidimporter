@@ -23,7 +23,7 @@ describe('Test Lucid chart Importer ', () => {
   it('it should return track name TEST and Track Status 2', async done => {
     const query = 'SELECT core.track.name, core.track."trackStatusId" FROM core.track;';
     const expected = {
-      name: 'lucidTest',
+      name: 'test',
       trackStatusId: 2
     }
     await queryFactory(query, track => {
