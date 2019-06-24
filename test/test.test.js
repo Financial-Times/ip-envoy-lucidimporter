@@ -26,7 +26,6 @@ describe('Test Lucid chart Importer ', () => {
       name: 'test',
       trackStatusId: 2
     }
-    
     await queryFactory(query, track => {
       expect(track[0]).toEqual(expected);
     });
