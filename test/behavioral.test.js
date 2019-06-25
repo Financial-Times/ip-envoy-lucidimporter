@@ -32,7 +32,7 @@ describe('Test Lucid chart Importer ', () => {
     done();
   })
   
-  it('it should return silo SOURCE and SHELVE', async done => {
+  it('it should return silo Source, Stage1, Stage 2 and shelf', async done => {
     const query = 'SELECT core.silo.name FROM core.silo;'
     await queryFactory(query, siloNames => {
       const names = siloNames.map(silo => silo.name);
