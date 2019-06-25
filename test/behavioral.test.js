@@ -1,6 +1,6 @@
 const { initialise } = require('../testDB/initialise');
 const knex = require('../testDB/connect')
-const { delay, queryFactory } = require('./util');
+const { delay, queryFactory } = require('./util.js');
 
 describe('Test Lucid chart Importer ', () => {
   beforeAll(async (done) => {
