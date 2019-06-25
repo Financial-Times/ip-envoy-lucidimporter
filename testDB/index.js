@@ -6,7 +6,7 @@ const { preParser, dbBuilder } = require('../src');
 const readFile = promisify(fs.readFile);
 
 async function getDDL(name) {
-  return (await readFile(`./db/schema/${name}.ddl`)).toString();
+  return (await readFile(`./testDB/schema/${name}.ddl`)).toString();
 }
 
 async function exists() {
@@ -51,7 +51,7 @@ async function init(forceDrop = false) {
 }
 
 function importFromLucidchart(fileName, callback) {
-  const importFile = `./data/${fileName}.csv`;
+  const importFile = `./testData/${fileName}.csv`;
   console.log(`Importing file: ${importFile}`);
   preParser.newCollection();
   fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {

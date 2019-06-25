@@ -1,6 +1,7 @@
 const waitForExpect = require('wait-for-expect');
-const { initialise } = require('../db/initialise');
-const knex = require('../db/connect')
+const { initialise } = require('../testDB/initialise');
+const knex = require('../testDB/connect')
+// const { delay, queryFactory } = require('./util');
 
 function delay(ms) {
   console.log(`Waiting for ${ms} milliseconds...`);
@@ -32,11 +33,11 @@ describe('Test Lucid chart Importer ', () => {
     done();
   })
   
-  it('it should return silo SOURCE and DRAIN', async done => {
+  it('it should return silo Source, Stage1, Stage 2 and shelf', async done => {
     const query = 'SELECT core.silo.name FROM core.silo;'
     await queryFactory(query, siloNames => {
       const names = siloNames.map(silo => silo.name);
-      expect(names).toEqual(expect.arrayContaining(['Source', 'Drain']));
+      expect(names).toEqual(expect.arrayContaining(['Source', 'Stage 1', 'Stage 2', 'Shelf']));
     });
     done();
   })
