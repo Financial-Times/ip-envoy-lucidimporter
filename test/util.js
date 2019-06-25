@@ -1,3 +1,4 @@
+const waitForExpect = require('wait-for-expect');
 
 function delay(ms) {
   console.log(`Waiting for ${ms} milliseconds...`);

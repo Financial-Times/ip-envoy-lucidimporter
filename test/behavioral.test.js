@@ -1,4 +1,3 @@
-const waitForExpect = require('wait-for-expect');
 const { initialise } = require('../testDB/initialise');
 const knex = require('../testDB/connect')
 const { delay, queryFactory } = require('./util');
