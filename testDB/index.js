@@ -6,7 +6,7 @@ const { preParser, dbBuilder } = require('../src');
 const readFile = promisify(fs.readFile);
 
 async function getDDL(name) {
-  return (await readFile(`./db/schema/${name}.ddl`)).toString();
+  return (await readFile(`./testDB/schema/${name}.ddl`)).toString();
 }
 
 async function exists() {
