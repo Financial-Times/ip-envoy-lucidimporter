@@ -51,7 +51,7 @@ async function init(forceDrop = false) {
 }
 
 function importFromLucidchart(fileName, callback) {
-  const importFile = `./data/${fileName}.csv`;
+  const importFile = `./testData/${fileName}.csv`;
   console.log(`Importing file: ${importFile}`);
   preParser.newCollection();
   fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
