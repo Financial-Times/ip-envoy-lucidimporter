@@ -6,3 +6,6 @@
 
 # Instalation
 - `>$ npm i @financial-times/ip-envoy-lucidimporter`
+
+# prerequisite 
+- If you run it locally , you need to set up `NODE_ENV=development` on `.env` file in your project root directory.  
