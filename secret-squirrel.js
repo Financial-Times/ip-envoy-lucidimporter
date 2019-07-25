@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = { // eslint-disable-line no-useless-catch
   files: {
     allow: [
       '.*\\/?\\.gitignore',
@@ -27,7 +27,7 @@ module.exports = {
       '[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}', // emails
       '[A-Z0-9]{20}', // AWS access key IDs
       '[A-Za-z0-9/\\\\+=]{40}', // AWS secret access keys
-      '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}', // UUIDs - see [0]
+      '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}' // UUIDs - see [0]
     ],
     denyOverrides: []
   }

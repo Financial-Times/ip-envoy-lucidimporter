@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs'); // eslint-disable-line no-useless-catch
 const csv = require('csv-parser');
 const { promisify } = require('util');
 const knex = require('./connect');
@@ -56,7 +56,7 @@ function importFromLucidchart(fileName, callback) {
   preParser.newCollection();
   fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
     preParser.have(rowData);
-  }).on('end', async () => { // We are done pulling in data
+  }).on('end', async() => { // We are done pulling in data
     if (await preParser.prepare(knex)) {
       await dbBuilder.make(preParser.lucidCollectionPreped, knex);
     }
