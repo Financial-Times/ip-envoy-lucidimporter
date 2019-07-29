@@ -34,7 +34,7 @@ async function seed() {
   await knex.raw(await getDDL('update_seed'));
 }
 
-async function init(forceDrop = false) {
+async function init() {
   console.log('DB init');
   try {
     const dbExists = await exists();

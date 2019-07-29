@@ -20,11 +20,13 @@
   },
   "homepage": "https://github.com/Financial-Times/ip-envoy-lucidimporter#readme",
   "scripts": {
+    "lint": "eslint .",
     "prepare": "snyk protect",
     "test": "jest"
   },
   "devDependencies": {
     "@financial-times/secret-squirrel": "^2.12.3",
+    "eslint": "^6.1.0",
     "jest": "^24.8.0"
   },
   "dependencies": {
