@@ -13,4 +13,4 @@ async function initialise() {
   console.debug('Ready.');
 }
 
-module.exports = { initialise }
+module.exports = { initialise };
