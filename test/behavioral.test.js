@@ -1,6 +1,6 @@
 const waitForExpect = require('wait-for-expect');
-const { initialise } = require('../testDB/initialise');
-const knex = require('../testDB/connect');
+const { initialise } = require('../service/initialise');
+const knex = require('../service/connect')
 
 function delay(ms) {
   console.log(`Waiting for ${ms} milliseconds...`);
