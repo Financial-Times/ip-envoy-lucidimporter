@@ -6,7 +6,7 @@ const { preParser, dbBuilder } = require('../src');
 const readFile = promisify(fs.readFile);
 
 async function getDDL(name) {
-  return (await readFile(`./testDB/schema/${name}.ddl`)).toString();
+  return (await readFile(`./service/schema/${name}.ddl`)).toString();
 }
 
 async function exists() {
@@ -34,7 +34,7 @@ async function seed() {
   await knex.raw(await getDDL('update_seed'));
 }
 
-async function init(forceDrop = false) {
+async function init() {
   console.log('DB init');
   try {
     const dbExists = await exists();
@@ -51,7 +51,7 @@ async function init(forceDrop = false) {
 }
 
 function importFromLucidchart(fileName, callback) {
-  const importFile = `./testData/${fileName}.csv`;
+  const importFile = `./data/${fileName}.csv`;
   console.log(`Importing file: ${importFile}`);
   preParser.newCollection();
   fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
