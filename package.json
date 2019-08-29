@@ -1,6 +1,6 @@
 {
   "name": "@financial-times/ip-envoy-lucidimporter",
-  "version": "2.0.2",
+  "version": "0.0.0",
   "description": "Lucid chart importer v2",
   "main": "src/index.js",
   "directories": {
