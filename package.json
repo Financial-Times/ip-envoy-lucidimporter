@@ -1,7 +1,7 @@
 {
   "name": "@financial-times/ip-envoy-lucidimporter",
-  "version": "0.0.0",
-  "description": "Lucid chart importer",
+  "version": "2.0.2",
+  "description": "Lucid chart importer v2",
   "main": "src/index.js",
   "directories": {
     "test": "test",
@@ -27,7 +27,11 @@
   "devDependencies": {
     "@financial-times/secret-squirrel": "^2.12.3",
     "eslint": "^6.1.0",
-    "jest": "^24.8.0"
+    "jest": "^24.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4"
   },
   "dependencies": {
     "csv-parser": "^2.3.0",
