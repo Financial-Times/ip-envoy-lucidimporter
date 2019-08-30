@@ -181,31 +181,6 @@ CREATE TABLE IF NOT EXISTS core.volt_query(
   proc_name VARCHAR(32) NOT NULL PRIMARY KEY
 );
 
-CREATE TABLE IF NOT EXISTS core."ruleSet"(
-  "ruleSetId" SERIAL PRIMARY KEY,
-  "name" VARCHAR(32) NOT NULL,
-  "descr" VARCHAR(255) NULL,
-  "ruleData" JSON NULL,
-  "scheduled" BOOL NOT NULL DEFAULT FALSE,
-  "volt_query" VARCHAR(32) REFERENCES core.volt_query,
-  "volt_query_key" VARCHAR(60)
-);
-
-COMMENT ON TABLE core."ruleSet" IS 'Groups together a collection of rules that make up a rule set';
-COMMENT ON COLUMN core."ruleSet"."scheduled" IS 'If true, this rule will be triggered from node-cron. This is intended for time sensitive rules only, eg. sunscription expiry';
-/* Note for possible future expansion: "scheduled" column could be replaced with a foriegn key to a timers table that defines different time
-intervals. For example, minutely, daily, weekly, monthly. This could lead to higher efficiency for less time sensitive rules by not over-polling
-The timers table would in turn populate node-cron at /app/cron/index.js, which is currently hard wired
-*/
-
-CREATE TABLE IF NOT EXISTS core."rule"(
-  "ruleId" SERIAL PRIMARY KEY,
-  "ruleSetId" INT NOT NULL REFERENCES core."ruleSet"("ruleSetId"), -- let ruleSets be defined later for now
-  "conditions" JSON NOT NULL,
-  "event" JSON NOT NULL,
-  "priority" SMALLINT NULL
-);
-
 COMMENT ON TABLE core."rule" IS 'One of a collection of rules that decide how entities
 move from one silo to another';
 
@@ -215,7 +190,7 @@ CREATE TABLE IF NOT EXISTS core."step"(
   "stepId" SERIAL PRIMARY KEY,
   "priority" SMALLINT DEFAULT 1,
   "currentSiloId" INT NULL REFERENCES core."silo"("siloId"),
-  "ruleSetId" INT NOT NULL REFERENCES core."ruleSet"("ruleSetId"),
+  "ruleSetName" VARCHAR(64) NOT NULL,
   "ruleSetParams" JSON NULL,
   "onPassSiloId" INT NOT NULL REFERENCES core."silo"("siloId"),
   "onFailSiloId" INT NULL REFERENCES core."silo"("siloId")
