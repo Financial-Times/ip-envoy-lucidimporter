@@ -181,9 +181,6 @@ CREATE TABLE IF NOT EXISTS core.volt_query(
   proc_name VARCHAR(32) NOT NULL PRIMARY KEY
 );
 
-COMMENT ON TABLE core."rule" IS 'One of a collection of rules that decide how entities
-move from one silo to another';
-
 /* Section 7 - steps to build up tracks */
 
 CREATE TABLE IF NOT EXISTS core."step"(
