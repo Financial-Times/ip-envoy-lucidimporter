@@ -198,6 +198,17 @@ depending on the outcome of a series of rulesets. In other words, this table def
 COMMENT ON COLUMN core."step"."currentSiloId" IS 'The current silo to which this rule applies. If null then it collects from entities table';
 COMMENT ON COLUMN core."step"."ruleSetParams" IS 'Silo specific rulesets params to pass to ruleSet. Eg: a value for time delay.';
 
+/* Johns mucking about - add support for multiple output rulesets experiment */
+
+CREATE TABLE IF NOT EXISTS core."step_passingSilos"(
+  "stepId" INT NOT NULL REFERENCES core."step"("stepId"),
+  "onPassSiloId" INT NOT NULL REFERENCES core."silo"("siloId"),
+  "label" VARCHAR(255) NOT NULL DEFAULT 'yes',
+  PRIMARY KEY("stepId", "onPassSiloId")
+);
+COMMENT ON TABLE core."step_passingSilos" IS 'Allows a ruleset to have more than one outcome, instead
+of a boolean pass/fail, it can support multiple onward passing silos';
+
 CREATE TABLE IF NOT EXISTS core."entity_silo"(
   "entity_silo_id" SERIAL PRIMARY KEY,
   "parent_entity_silo_id" INT NULL REFERENCES core."entity_silo"("entity_silo_id"),
