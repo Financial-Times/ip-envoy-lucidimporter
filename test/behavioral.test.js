@@ -20,14 +20,14 @@ describe('Test Lucid chart Importer ', () => {
     done();
   });
 
-  it('it should return track name TEST and Track Status 2', async (done) => {
-    const query = 'SELECT core.track.name, core.track."trackStatusId" FROM core.track;';
+  it('it should return journey name TEST and journey Status 2', async (done) => {
+    const query = 'SELECT core.journey.name, core.journey."journeyStatusId" FROM core.journey;';
     const expected = {
       name: 'test',
-      trackStatusId: 2
+      journeyStatusId: 2
     };
-    await queryFactory(query, (track) => {
-      expect(track[0]).toEqual(expected);
+    await queryFactory(query, (journey) => {
+      expect(journey[0]).toEqual(expected);
     });
     done();
   });
