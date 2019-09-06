@@ -13,7 +13,7 @@ INSERT INTO core."siloType"("siloTypeId", "name", "descr") VALUES
   ,(3, 'Shelve', 'Holds users until a future manual intervention removes them')
   ,(4, 'Drain', 'End point of a user journey')
   /* Reserved for possible future use
-  ,(5, 'Transport', 'Users in this Silo can jump from one track to another. Allows joining of tracks and ability to make modular user journeys')
+  ,(5, 'Transport', 'Users in this Silo can jump from one Journey to another. Allows joining of Journey and ability to make modular user journeys')
   */
 ;
 
@@ -33,12 +33,12 @@ INSERT INTO core."siloTypeProgression"("siloTypeProgressionId", "fromSiloTypeId"
   */
    ;
 
-INSERT INTO core."trackStatus" ("trackStatusId", "name", "descr") VALUES
-   (1, 'pending', 'Track is initiated, but the initial query has not been run and no entities exist in first silo')
+INSERT INTO core."journeyStatus" ("journeyStatusId", "name", "descr") VALUES
+   (1, 'pending', 'Journey is initiated, but the initial query has not been run and no entities exist in first silo')
   ,(2, 'primed', 'Initial query has been run and entities are in first silo only, ready for onward processing')
-  ,(3, 'live', 'Track is active and entities are being moved between silos')
-  ,(4, 'paused', 'Track is live but paused, no rules are being process and entities will not move between silos')
-  ,(5, 'halted', 'Track has been stopped and will not be resumed without manual intervention, because an emergency stop has been triggered')
+  ,(3, 'live', 'Journey is active and entities are being moved between silos')
+  ,(4, 'paused', 'Journey is live but paused, no rules are being process and entities will not move between silos')
+  ,(5, 'halted', 'Journey has been stopped and will not be resumed without manual intervention, because an emergency stop has been triggered')
   ,(6, 'edit', 'This track is still being edited by a user and is not yet in use')
   ;
 

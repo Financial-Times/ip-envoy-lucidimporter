@@ -1,13 +1,13 @@
-
 CREATE SCHEMA IF NOT EXISTS core;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
--- Section 0 - set up Entity Tables
+/* Section 0 - set up Entity Tables */
 
 CREATE TABLE IF NOT EXISTS core."entityType"(
   "name" VARCHAR(16) NOT NULL PRIMARY KEY
 );
+
 COMMENT ON TABLE core."entityType" IS 'Defines Entities, in most cases this will be users but can
 be expanded to anything';
 COMMENT ON COLUMN core."entityType"."name" IS 'A description of what the entity is about';
@@ -21,78 +21,30 @@ CREATE TABLE IF NOT EXISTS core."entity"(
   "currentData" JSON
 );
 
--- Section 1 - set up Department, Capaingns and Tracks
-CREATE TABLE IF NOT EXISTS core."department"(
-  "departmentId" SMALLSERIAL PRIMARY KEY,
-  "name" VARCHAR(32) NOT NULL,
-  "descr" VARCHAR(64) NULL
-);
-COMMENT ON TABLE core."department" IS 'Groups campaigns by department';
+/* Section 1 - set up Tracks */
 
-CREATE TABLE IF NOT EXISTS core."campaign"(
-  "campaignId" SMALLSERIAL PRIMARY KEY,
-  "departmentId" INT NULL REFERENCES core."department"("departmentId"),
-  "name" VARCHAR(32) NOT NULL,
-  "descr" VARCHAR(64) NULL,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "deleted" TIMESTAMP NULL
-);
-COMMENT ON TABLE core."campaign" IS 'Groups campaign revisions';
-
-CREATE TABLE IF NOT EXISTS core."campaignRev"(
-  "campaignRevId" SERIAL PRIMARY KEY,
-  "parentRevId" INT NULL REFERENCES core."campaignRev"("campaignRevId"),
-  "campaignId" SMALLINT NOT NULL REFERENCES core."campaign"("campaignId"),
-  "descr" VARCHAR(64) NULL,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "isActive" BOOL NOT NULL DEFAULT TRUE,
-  "deleted" TIMESTAMP NULL
-);
-COMMENT ON TABLE core."campaignRev" IS 'Groups together a set of tracks the entity can follow,
-or "entity/user journeys"';
-
-CREATE TABLE IF NOT EXISTS core."trackStatus"(
-  "trackStatusId" SMALLSERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS core."journeyStatus"(
+  "journeyStatusId" SMALLSERIAL PRIMARY KEY,
   "name" VARCHAR(32) NOT NULL,
   "descr" VARCHAR(128) NULL
 );
 
-CREATE TABLE IF NOT EXISTS core."track"(
-  "trackId" SERIAL PRIMARY KEY,
-  "campaignRevId" INT NOT NULL REFERENCES core."campaignRev"("campaignRevId"),
-  "entityTypeName" VARCHAR(16) NOT NULL REFERENCES core."entityType"("name"),
-  "trackStatusId" SMALLINT NOT NULL REFERENCES core."trackStatus"("trackStatusId") DEFAULT 2,
-  "name" VARCHAR(32) NOT NULL,
-  "descr" VARCHAR(128) NULL,
-  "deleted" TIMESTAMP NULL
-);
-COMMENT ON TABLE core."track" IS 'Groups together differing versions of entity
-tracks (or journeys)';
-COMMENT ON COLUMN core."track"."entityTypeName" IS 'A track must be restricted to one entityType';
 
-COMMENT ON TABLE core."trackStatus" IS 'Status can be pending,primed,live,paused,stopped';
-
-CREATE TABLE IF NOT EXISTS core."trackRev"(
-  "trackRevId" SERIAL PRIMARY KEY,
-  "parentTrackRevId" INT NULL REFERENCES core."trackRev"("trackRevId"),
-  "trackId" INT NOT NULL REFERENCES core."track"("trackId"),
-  "descr" VARCHAR(64) NULL,
-  "docRef" VARCHAR(128) NULL,
+CREATE TABLE IF NOT EXISTS core."journey"(
+  "journeyId" SERIAL PRIMARY KEY,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "isActive" BOOL NOT NULL DEFAULT TRUE,
+  "journeyStatusId" SMALLINT NOT NULL REFERENCES core."journeyStatus"("journeyStatusId") DEFAULT 2,
+  "parentJourneyId" INT NULL REFERENCES core."journey"("journeyId"),
+  "entityTypeName" VARCHAR(16) NOT NULL REFERENCES core."entityType"("name"),
+  "name" VARCHAR(64) NOT NULL,
+  "descr" VARCHAR(128) NULL,
   "deleted" TIMESTAMP NULL,
   "voltQuery" TEXT NULL,
   "GUIData" JSON
 );
-COMMENT ON TABLE core."trackRev" IS 'Defines a group of steps that make up a journey that
-an entity can take';
-COMMENT ON COLUMN core."trackRev"."docRef" IS 'An optional link to a document or diagram about the track';
+COMMENT ON TABLE core."journey" IS 'Defines journeys';
 
--- Foreign key is circular, so we need to alter the track table adter trackRev has been created
-ALTER TABLE core."track" ADD COLUMN IF NOT EXISTS "currentTrackRevId" INT NULL REFERENCES core."trackRev"("trackRevId");
-COMMENT ON COLUMN core."track"."currentTrackRevId" IS 'Only one track revision may be used at a time and this column sets it';
-
--- Section 2 - set up Silos
+/* Section 2 - set up Silos */
 
 CREATE TABLE IF NOT EXISTS core."siloType"(
   "siloTypeId" SMALLSERIAL PRIMARY KEY,
@@ -115,7 +67,7 @@ other way around';
 CREATE TABLE IF NOT EXISTS core."silo"(
   "siloId" SERIAL PRIMARY KEY,
   "siloTypeId" SMALLINT NOT NULL REFERENCES core."siloType"("siloTypeId"),
-  "trackRevId" INT NOT NULL REFERENCES core."trackRev"("trackRevId"),
+  "journeyId" INT NOT NULL REFERENCES core."journey"("journeyId"),
   "name" VARCHAR(32) NOT NULL,
   "descr" VARCHAR(64) NULL,
   "GUIref" UUID
@@ -123,7 +75,10 @@ CREATE TABLE IF NOT EXISTS core."silo"(
 COMMENT ON TABLE core."silo" IS 'Defines each silo that entities can reside in
 during their journeys';
 
--- Section 3 - channels
+/* Section 3 - entityType Tables - reserved for future use */
+/* Section 4 - timers - no longer used */
+
+/* Section 5 - channels */
 
 CREATE TABLE IF NOT EXISTS core."channelType"(
   "channelTypeId" SMALLSERIAL PRIMARY KEY,
@@ -171,13 +126,13 @@ COMMENT ON TABLE core."channel_silo" IS 'Links silos to channels. In other words
 lands in a silo, this table decides what channels are triggered.';
 COMMENT ON COLUMN core."channel_silo"."config" IS 'specific configuration to use for this channel instance on this specific silo. For example, email templateId';
 
--- Section 4 - rules engine
+/* Section 6 - rules engine */
 
 CREATE TABLE IF NOT EXISTS core.volt_query(
   proc_name VARCHAR(32) NOT NULL PRIMARY KEY
 );
 
--- Section 5 - steps to build up tracks
+/* Section 7 - steps to build up journeys */
 
 CREATE TABLE IF NOT EXISTS core."step"(
   "stepId" SERIAL PRIMARY KEY,
@@ -185,14 +140,16 @@ CREATE TABLE IF NOT EXISTS core."step"(
   "currentSiloId" INT NULL REFERENCES core."silo"("siloId"),
   "ruleSetName" VARCHAR(64) NOT NULL,
   "ruleSetParams" JSON NULL,
-  "onPassSiloId" INT NOT NULL REFERENCES core."silo"("siloId"),
+  "onPassSiloId" INT NULL REFERENCES core."silo"("siloId"), -- COL DEPRECATED! - NULL constraint removed
   "onFailSiloId" INT NULL REFERENCES core."silo"("siloId")
 );
 
 COMMENT ON TABLE core."step" IS 'Defines how the entities moves from one silo to another
-depending on the outcome of a series of rulesets. In other words, this table defines all tracks';
+depending on the outcome of a series of rulesets. In other words, this table defines all journeys';
 COMMENT ON COLUMN core."step"."currentSiloId" IS 'The current silo to which this rule applies. If null then it collects from entities table';
 COMMENT ON COLUMN core."step"."ruleSetParams" IS 'Silo specific rulesets params to pass to ruleSet. Eg: a value for time delay.';
+
+/* Johns mucking about - add support for multiple output rulesets experiment */
 
 CREATE TABLE IF NOT EXISTS core."step_passingSilos"(
   "stepId" INT NOT NULL REFERENCES core."step"("stepId"),
@@ -202,6 +159,7 @@ CREATE TABLE IF NOT EXISTS core."step_passingSilos"(
 );
 COMMENT ON TABLE core."step_passingSilos" IS 'Allows a ruleset to have more than one outcome, instead
 of a boolean pass/fail, it can support multiple onward passing silos';
+
 
 CREATE TABLE IF NOT EXISTS core."entity_silo"(
   "entity_silo_id" SERIAL PRIMARY KEY,
