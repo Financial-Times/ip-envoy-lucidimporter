@@ -38,11 +38,21 @@ async function init() {
   console.log('DB init');
   try {
     const dbExists = await exists();
+
+    console.warn('test 1');
+    console.warn(dbExists);
+
     if (dbExists) {
       await drop();
       console.log('existing schema flushed as requested in config');
     }
+
+    console.warn('test 2');
     await create();
+
+    console.warn('test 3');
+  //  console.warn(dbExists);
+
     await seed();
     console.log('new db schema created');
   } catch (err) {

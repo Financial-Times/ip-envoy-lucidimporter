@@ -1,13 +1,13 @@
+
 CREATE SCHEMA IF NOT EXISTS core;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
-/* Section 0 - set up Entity Tables */
+-- Section 0 - set up Entity Tables
 
 CREATE TABLE IF NOT EXISTS core."entityType"(
   "name" VARCHAR(16) NOT NULL PRIMARY KEY
 );
-
 COMMENT ON TABLE core."entityType" IS 'Defines Entities, in most cases this will be users but can
 be expanded to anything';
 COMMENT ON COLUMN core."entityType"."name" IS 'A description of what the entity is about';
@@ -21,8 +21,7 @@ CREATE TABLE IF NOT EXISTS core."entity"(
   "currentData" JSON
 );
 
-/* Section 1 - set up Department, Capaingns and Tracks */
-
+-- Section 1 - set up Department, Capaingns and Tracks
 CREATE TABLE IF NOT EXISTS core."department"(
   "departmentId" SMALLSERIAL PRIMARY KEY,
   "name" VARCHAR(32) NOT NULL,
@@ -93,7 +92,7 @@ COMMENT ON COLUMN core."trackRev"."docRef" IS 'An optional link to a document or
 ALTER TABLE core."track" ADD COLUMN IF NOT EXISTS "currentTrackRevId" INT NULL REFERENCES core."trackRev"("trackRevId");
 COMMENT ON COLUMN core."track"."currentTrackRevId" IS 'Only one track revision may be used at a time and this column sets it';
 
-/* Section 2 - set up Silos */
+-- Section 2 - set up Silos
 
 CREATE TABLE IF NOT EXISTS core."siloType"(
   "siloTypeId" SMALLSERIAL PRIMARY KEY,
@@ -124,10 +123,7 @@ CREATE TABLE IF NOT EXISTS core."silo"(
 COMMENT ON TABLE core."silo" IS 'Defines each silo that entities can reside in
 during their journeys';
 
-/* Section 3 - entityType Tables - reserved for future use */
-/* Section 4 - timers - no longer used */
-
-/* Section 5 - channels */
+-- Section 3 - channels
 
 CREATE TABLE IF NOT EXISTS core."channelType"(
   "channelTypeId" SMALLSERIAL PRIMARY KEY,
@@ -175,13 +171,13 @@ COMMENT ON TABLE core."channel_silo" IS 'Links silos to channels. In other words
 lands in a silo, this table decides what channels are triggered.';
 COMMENT ON COLUMN core."channel_silo"."config" IS 'specific configuration to use for this channel instance on this specific silo. For example, email templateId';
 
-/* Section 6 - rules engine */
+-- Section 4 - rules engine
 
 CREATE TABLE IF NOT EXISTS core.volt_query(
   proc_name VARCHAR(32) NOT NULL PRIMARY KEY
 );
 
-/* Section 7 - steps to build up tracks */
+-- Section 5 - steps to build up tracks
 
 CREATE TABLE IF NOT EXISTS core."step"(
   "stepId" SERIAL PRIMARY KEY,
@@ -197,8 +193,6 @@ COMMENT ON TABLE core."step" IS 'Defines how the entities moves from one silo to
 depending on the outcome of a series of rulesets. In other words, this table defines all tracks';
 COMMENT ON COLUMN core."step"."currentSiloId" IS 'The current silo to which this rule applies. If null then it collects from entities table';
 COMMENT ON COLUMN core."step"."ruleSetParams" IS 'Silo specific rulesets params to pass to ruleSet. Eg: a value for time delay.';
-
-/* Johns mucking about - add support for multiple output rulesets experiment */
 
 CREATE TABLE IF NOT EXISTS core."step_passingSilos"(
   "stepId" INT NOT NULL REFERENCES core."step"("stepId"),
