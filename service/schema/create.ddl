@@ -1,7 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS core;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-
 /* Section 0 - set up Entity Tables */
 
 CREATE TABLE IF NOT EXISTS core."entityType"(
@@ -21,7 +20,7 @@ CREATE TABLE IF NOT EXISTS core."entity"(
   "currentData" JSON
 );
 
-/* Section 1 - set up Tracks */
+/* Section 1 - set up Journey */
 
 CREATE TABLE IF NOT EXISTS core."journeyStatus"(
   "journeyStatusId" SMALLSERIAL PRIMARY KEY,
@@ -78,53 +77,53 @@ during their journeys';
 /* Section 3 - entityType Tables - reserved for future use */
 /* Section 4 - timers - no longer used */
 
-/* Section 5 - channels */
+/* Section 5 - actions */
 
-CREATE TABLE IF NOT EXISTS core."channelType"(
-  "channelTypeId" SMALLSERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS core."actionType"(
+  "actionTypeId" SMALLSERIAL PRIMARY KEY,
   "name" VARCHAR(32) NOT NULL UNIQUE,
   "config" JSON NULL
 );
 
--- COMMENT ON TABLE core."channelType" IS 'Defines channel type such as SMS, OSM, phone, whatsApp etc,
--- along with any additional metadata required to communicate with that channel';
+-- COMMENT ON TABLE core."actionType" IS 'Defines action type such as SMS, OSM, phone, whatsApp etc,
+-- along with any additional metadata required to communicate with that action';
 
 
 CREATE TABLE IF NOT EXISTS core."silo_weighting"(
   "siloId" INT NOT NULL REFERENCES core."silo"("siloId"),
-  "channelTypeId" SMALLINT NOT NULL REFERENCES core."channelType"("channelTypeId"),
+  "actionTypeId" SMALLINT NOT NULL REFERENCES core."actionType"("actionTypeId"),
   "weighting" REAL NOT NULL,
-  PRIMARY KEY("siloId", "channelTypeId")
+  PRIMARY KEY("siloId", "actionTypeId")
 );
 
 COMMENT ON TABLE core."silo_weighting" IS 'Give some silos a bigger weighting and importance than
-others. Weighting can be separated by channelType. Messages in a higher weighted Silo will win over
+others. Weighting can be separated by actionType. Messages in a higher weighted Silo will win over
 messages in a lower weighted silo in the event they compete (OSM for example)';
 
 
-CREATE TABLE IF NOT EXISTS core."channel"(
-  "channelId" SMALLSERIAL PRIMARY KEY,
-  "channelTypeId" SMALLINT NOT NULL REFERENCES core."channelType"("channelTypeId"),
+CREATE TABLE IF NOT EXISTS core."action"(
+  "actionId" SMALLSERIAL PRIMARY KEY,
+  "actionTypeId" SMALLINT NOT NULL REFERENCES core."actionType"("actionTypeId"),
   "name" VARCHAR(32) NOT NULL UNIQUE,
   "descr" VARCHAR(64) NULL,
   "config" JSON NULL
 );
 
-COMMENT ON TABLE core."channel" IS 'Defines channels. metadata can be used for any arbitrary
-information needed by the channel';
+COMMENT ON TABLE core."action" IS 'Defines actions. metadata can be used for any arbitrary
+information needed by the action';
 
-CREATE TABLE IF NOT EXISTS core."channel_silo"(
-  "channel_silo_id" SERIAL PRIMARY KEY,
-  "channelId" SMALLINT NOT NULL REFERENCES core."channel"("channelId"),
+CREATE TABLE IF NOT EXISTS core."action_silo"(
+  "action_silo_id" SERIAL PRIMARY KEY,
+  "actionId" SMALLINT NOT NULL REFERENCES core."action"("actionId"),
   "siloId" INT NOT NULL REFERENCES core."silo"("siloId"),
   "config" JSON NULL,
   "temp_tata" JSON NULL,
   "GUIref" UUID
 );
 
-COMMENT ON TABLE core."channel_silo" IS 'Links silos to channels. In other words, when a entity
-lands in a silo, this table decides what channels are triggered.';
-COMMENT ON COLUMN core."channel_silo"."config" IS 'specific configuration to use for this channel instance on this specific silo. For example, email templateId';
+COMMENT ON TABLE core."action_silo" IS 'Links silos to actions. In other words, when a entity
+lands in a silo, this table decides what actions are triggered.';
+COMMENT ON COLUMN core."action_silo"."config" IS 'specific configuration to use for this action instance on this specific silo. For example, email templateId';
 
 /* Section 6 - rules engine */
 
@@ -180,23 +179,23 @@ COMMENT ON COLUMN core."entity_silo"."lastStepId" IS 'The last stepId that was t
 the entity to be in the current silo';
 COMMENT ON COLUMN core."entity_silo"."ruleSetResult" IS 'Info about the rule/s that fired within the ruleset that caused this entity to be here';
 
-CREATE TABLE IF NOT EXISTS core."channel_entity_silo_log"(
-  "channel_entity_silo_log_id" SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS core."action_entity_silo_log"(
+  "action_entity_silo_log_id" SERIAL PRIMARY KEY,
   "entity_silo_id" INT NOT NULL REFERENCES core."entity_silo"("entity_silo_id"),
   "actionKey" UUID NOT NULL DEFAULT uuid_generate_v1(),
-  "channel_silo_id" INT NOT NULL REFERENCES core."channel_silo"("channel_silo_id"),
+  "action_silo_id" INT NOT NULL REFERENCES core."action_silo"("action_silo_id"),
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "logData" JSON NULL,
   unique ("actionKey")
 );
 
-COMMENT ON TABLE core."channel_entity_silo_log" IS 'Keeps a note of what channel is activated for
+COMMENT ON TABLE core."action_entity_silo_log" IS 'Keeps a note of what action is activated for
 each entity and prevents duplicates';
 
 CREATE TABLE IF NOT EXISTS core."event"(
   "eventId" SERIAL PRIMARY KEY,
   "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "actionKey" UUID NULL REFERENCES core."channel_entity_silo_log"("actionKey"),
+  "actionKey" UUID NULL REFERENCES core."action_entity_silo_log"("actionKey"),
   "entityId" VARCHAR(60) NOT NULL REFERENCES core."entity"("entityId"),
   "entityTypeName" VARCHAR(16) NOT NULL REFERENCES core."entityType"("name"),
   "eventData" JSON NULL,
@@ -234,4 +233,4 @@ $$;
 
 CREATE INDEX entity_silo_entityid_fkey ON core.entity_silo ("entityId");
 CREATE INDEX entity_silo_siloid_fkey ON core.entity_silo ("siloId");
-CREATE UNIQUE INDEX entity_id_silo_id_key ON core.entity_silo ("entityId", "siloId")
+CREATE UNIQUE INDEX entity_id_silo_id_key ON core.entity_silo ("entityId", "siloId");
