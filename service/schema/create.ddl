@@ -69,13 +69,28 @@ CREATE TABLE IF NOT EXISTS core."silo"(
   "journeyId" INT NOT NULL REFERENCES core."journey"("journeyId"),
   "name" VARCHAR(32) NOT NULL,
   "descr" VARCHAR(64) NULL,
+  "props" JSONB NULL,
   "GUIref" UUID
 );
 COMMENT ON TABLE core."silo" IS 'Defines each silo that entities can reside in
 during their journeys';
 
+COMMENT ON COLUMN core."silo"."props" IS 'Stores additional silo properties, such as retry delays and in the future things like TTL';
+
 /* Section 3 - entityType Tables - reserved for future use */
-/* Section 4 - timers - no longer used */
+/* Section 4 - scheduling */
+
+CREATE TABLE IF NOT EXISTS core."schedule"(
+  "siloId" INT NOT NULL REFERENCES core."silo"("siloId"),
+  "entityId" VARCHAR(60) NOT NULL REFERENCES core."entity"("entityId"),
+  "nextTrigger" TIMESTAMP NOT NULL,
+  "triggerCount" INT NOT NULL,
+  PRIMARY KEY("siloId", "entityId")
+);
+COMMENT ON TABLE core."schedule" IS 'A table of rescheduled triggers. Generally used to make delay rules and polling more effecient';
+COMMENT ON COLUMN core."schedule"."nextTrigger" IS 'The scheduled rules attached to this silo should not be reriggered until this time has passed';
+COMMENT ON COLUMN core."schedule"."triggerCount" IS 'Keeps a count of how often this has been trtriggered. When silo maxTries exceeded this stops';
+
 
 /* Section 5 - actions */
 
@@ -191,45 +206,6 @@ CREATE TABLE IF NOT EXISTS core."action_entity_silo_log"(
 
 COMMENT ON TABLE core."action_entity_silo_log" IS 'Keeps a note of what action is activated for
 each entity and prevents duplicates';
-
-CREATE TABLE IF NOT EXISTS core."event"(
-  "eventId" SERIAL PRIMARY KEY,
-  "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "actionKey" UUID NULL REFERENCES core."action_entity_silo_log"("actionKey"),
-  "entityId" VARCHAR(60) NOT NULL REFERENCES core."entity"("entityId"),
-  "entityTypeName" VARCHAR(16) NOT NULL REFERENCES core."entityType"("name"),
-  "eventData" JSON NULL,
-  "reverseCreate" JSON NULL,
-  "reverseUpdate" JSON NULL,
-  "reverseDelete" JSON NULL
-);
-
-COMMENT ON TABLE core."event" IS 'Keeps a record of events and how they affect entity data';
-COMMENT ON COLUMN core."event"."reverseCreate" IS 'The modifications needed to revert changes to
-entity data';
-COMMENT ON COLUMN core."event"."reverseUpdate" IS 'The modifications needed to revert changes to
-entity data';
-COMMENT ON COLUMN core."event"."reverseDelete" IS 'The modifications needed to revert changes to
-entity data';
-
-
--- Now to set up a watch on the events table, so things happen in node when this table is updated
-CREATE OR REPLACE FUNCTION core.notify_trigger() RETURNS trigger AS $$
-DECLARE
-BEGIN
-  PERFORM pg_notify('monitor', TG_TABLE_NAME || ',' || OLD ',' || NEW );
-  RETURN new;
-END;
-$$ LANGUAGE plpgsql;
-
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'event_trigger') THEN
-    CREATE TRIGGER event_trigger AFTER INSERT ON core."event"
-    FOR EACH ROW EXECUTE PROCEDURE core.notify_trigger();
-  END IF;
-END
-$$;
 
 CREATE INDEX entity_silo_entityid_fkey ON core.entity_silo ("entityId");
 CREATE INDEX entity_silo_siloid_fkey ON core.entity_silo ("siloId");
