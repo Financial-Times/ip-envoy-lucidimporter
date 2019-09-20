@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS core;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-/* Section 0 - set up Entity Tables */
+/* set up Entity Tables */
 
 CREATE TABLE IF NOT EXISTS core."entityType"(
   "name" VARCHAR(16) NOT NULL PRIMARY KEY
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS core."entity"(
   "currentData" JSON
 );
 
-/* Section 1 - set up Journey */
+/* set up Journey */
 
 CREATE TABLE IF NOT EXISTS core."journeyStatus"(
   "journeyStatusId" SMALLSERIAL PRIMARY KEY,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS core."journey"(
 );
 COMMENT ON TABLE core."journey" IS 'Defines journeys';
 
-/* Section 2 - set up Silos */
+/* set up Silos */
 
 CREATE TABLE IF NOT EXISTS core."siloType"(
   "siloTypeId" SMALLSERIAL PRIMARY KEY,
@@ -75,24 +75,11 @@ CREATE TABLE IF NOT EXISTS core."silo"(
 COMMENT ON TABLE core."silo" IS 'Defines each silo that entities can reside in
 during their journeys';
 
-COMMENT ON COLUMN core."silo"."props" IS 'Stores additional silo properties, such as retry delays and in the future things like TTL';
+COMMENT ON COLUMN core."silo"."props" IS 'This is reserved for future use, should we want to add properties to silos';
 
-/* Section 3 - entityType Tables - reserved for future use */
-/* Section 4 - scheduling */
+/* entityType Tables - reserved for future use */
 
-CREATE TABLE IF NOT EXISTS core."schedule"(
-  "siloId" INT NOT NULL REFERENCES core."silo"("siloId"),
-  "entityId" VARCHAR(60) NOT NULL REFERENCES core."entity"("entityId"),
-  "nextTrigger" TIMESTAMP NOT NULL,
-  "triggerCount" INT NOT NULL,
-  PRIMARY KEY("siloId", "entityId")
-);
-COMMENT ON TABLE core."schedule" IS 'A table of rescheduled triggers. Generally used to make delay rules and polling more effecient';
-COMMENT ON COLUMN core."schedule"."nextTrigger" IS 'The scheduled rules attached to this silo should not be reriggered until this time has passed';
-COMMENT ON COLUMN core."schedule"."triggerCount" IS 'Keeps a count of how often this has been trtriggered. When silo maxTries exceeded this stops';
-
-
-/* Section 5 - actions */
+/* actions */
 
 CREATE TABLE IF NOT EXISTS core."actionType"(
   "actionTypeId" SMALLSERIAL PRIMARY KEY,
@@ -140,13 +127,13 @@ COMMENT ON TABLE core."action_silo" IS 'Links silos to actions. In other words, 
 lands in a silo, this table decides what actions are triggered.';
 COMMENT ON COLUMN core."action_silo"."config" IS 'specific configuration to use for this action instance on this specific silo. For example, email templateId';
 
-/* Section 6 - rules engine */
+/* rules engine */
 
 CREATE TABLE IF NOT EXISTS core.volt_query(
   proc_name VARCHAR(32) NOT NULL PRIMARY KEY
 );
 
-/* Section 7 - steps to build up journeys */
+/* steps to build up journeys */
 
 CREATE TABLE IF NOT EXISTS core."step"(
   "stepId" SERIAL PRIMARY KEY,
@@ -174,6 +161,21 @@ CREATE TABLE IF NOT EXISTS core."step_passingSilos"(
 COMMENT ON TABLE core."step_passingSilos" IS 'Allows a ruleset to have more than one outcome, instead
 of a boolean pass/fail, it can support multiple onward passing silos';
 
+/* scheduling */
+
+CREATE TABLE IF NOT EXISTS core."schedule"(
+  "stepId" INT NOT NULL REFERENCES core."step"("stepId"),
+  "entityId" VARCHAR(60) NOT NULL REFERENCES core."entity"("entityId"),
+  "nextTrigger" TIMESTAMP NOT NULL,
+  "triggerCount" INT NOT NULL,
+  PRIMARY KEY("stepId", "entityId")
+);
+
+COMMENT ON TABLE core."schedule" IS 'A table of rescheduled triggers. Generally used to make delay rules and polling more effecient';
+COMMENT ON COLUMN core."schedule"."nextTrigger" IS 'The scheduled rules attached to this silo should not be reriggered until this time has passed';
+COMMENT ON COLUMN core."schedule"."triggerCount" IS 'Keeps a count of how often this has been trtriggered. When silo maxTries exceeded this stops';
+
+/* This may be removed in the future in favour of JSONB persistance for entity journey positions */
 
 CREATE TABLE IF NOT EXISTS core."entity_silo"(
   "entity_silo_id" SERIAL PRIMARY KEY,
