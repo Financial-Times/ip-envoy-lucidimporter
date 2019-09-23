@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS core."journey"(
   "descr" VARCHAR(128) NULL,
   "deleted" TIMESTAMP NULL,
   "voltQuery" TEXT NULL,
-  "GUIData" JSON
+  "GUIData" JSON,
+  "journeyConfig" JSONB
 );
 COMMENT ON TABLE core."journey" IS 'Defines journeys';
 
