@@ -3,6 +3,7 @@ const csv = require('csv-parser');
 const { promisify } = require('util');
 const knex = require('./connect');
 const { preParser, dbBuilder } = require('../src');
+
 const readFile = promisify(fs.readFile);
 
 async function getDDL(name) {
@@ -42,6 +43,7 @@ async function init() {
       await drop();
       console.log('existing schema flushed as requested in config');
     }
+
     await create();
     await seed();
     console.log('new db schema created');

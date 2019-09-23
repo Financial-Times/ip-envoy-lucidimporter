@@ -6,7 +6,7 @@ Id,Name,Shape Library,Page ID,Contained By,Group,Line Source,Line Destination,So
 5,Table,Tables,1,,,,,,,Department,MA Dev Test - Marketing Automation Developer Test,Marketing Automation Developer Test,,,,MA Dev Test,test1,,,Department,
 6,Stage,Geometric Shapes,1,2:1|3:1,,,,,,Stage 2,,,,,,,,2,Stage,Silo,
 7,Shelf,Geometric Shapes,1,2:1|3:1,,,,,,Shelf,,,,,,,,3,Shelve,Silo,
-8,Diamond,Geometric Shapes,1,2:1|3:1,,,,,, autoPass ,,Immediately move entity from a silo (usually after channel send),,,,autoPass,,,,RuleSet,
+8,Diamond,Geometric Shapes,1,2:1|3:1,,,,,, autoPass ,,Immediately move entity from a silo (usually after action send),,,,autoPass,,,,RuleSet,
 9,Seeded Split,Geometric Shapes,1,2:1|3:1,,,,,,Seeded Split,,,,100,50,seeded-split,,,,RuleSet,
 10,Stage,Geometric Shapes,1,2:1|3:1,,,,,,Stage 1,,,,,,,,2,Stage,Silo,
 11,Line,,1,,,8,4,None,Arrow,,,,,,,,,,,,
