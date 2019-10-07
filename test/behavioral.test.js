@@ -44,6 +44,20 @@ describe('Test Lucid chart Importer ', () => {
     done();
   });
 
+  it('it should have journey config and control group of 0.4', async (done) => {
+    const query = 'SELECT core.journey.name, core.journey."journeyConfig" FROM core.journey;';
+    const expected = {
+      name: 'test',
+      journeyConfig: {
+        controlGroup: 0.4
+      }
+    };
+    await queryFactory(query, (journey) => {
+      expect(journey[0]).toEqual(expected);
+    });
+    done();
+  });
+
   afterAll(async (done) => {
     delay(5);
     await knex.destroy();
