@@ -34,12 +34,12 @@
     "eslint-plugin-react": "^7.12.4"
   },
   "dependencies": {
+    "@financial-times/n-logger": "^6.0.1",
     "csv-parser": "^2.3.0",
     "fs": "0.0.1-security",
     "husky": "^2.4.0",
-    "knex": "^0.17.6",
+    "knex": "^0.19.5",
     "lodash": "^4.17.10",
-    "@financial-times/n-logger": "^6.0.1",
     "pg": "^7.11.0",
     "snyk": "^1.174.1",
     "util": "^0.12.0",
