@@ -2,7 +2,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const { promisify } = require('util');
 const knex = require('./connect');
-const { is_violateRule, preParser, dbBuilder } = require('../src');
+const { isViolateRule, preParser, dbBuilder } = require('../src');
 
 const readFile = promisify(fs.readFile); 
 
@@ -53,7 +53,7 @@ async function init() {
 }
 
 function importFromLucidchart(fileName, callback) {
-  if(is_violateRule(fileName)) {
+  if(isViolateRule(fileName)) {
     const importFile = `./data/${fileName}.csv`;
     console.log(`Importing file: ${importFile}`);
     preParser.newCollection();
