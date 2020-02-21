@@ -2,7 +2,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const { promisify } = require('util');
 const knex = require('./connect');
-const { isViolateRule, preParser, dbBuilder } = require('../src');
+const { preParser, dbBuilder } = require('../src');
 
 const readFile = promisify(fs.readFile); 
 
@@ -53,22 +53,17 @@ async function init() {
 }
 
 function importFromLucidchart(fileName, callback) {
-  if(isViolateRule(fileName)) {
-    const importFile = `./data/${fileName}.csv`;
-    console.log(`Importing file: ${importFile}`);
-    preParser.newCollection();
-    fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
-      preParser.have(rowData);
-    }).on('end', async () => { // We are done pulling in data
-      if (await preParser.prepare(knex)) {
-        await dbBuilder.make(preParser.lucidCollectionPreped, knex);
-      }
-      callback();
-    });
-  } else {
-    console.debug(`*** - JOURNEY NAME violate rules, please check Journey:, ${fileName} ***`);
-    callback(false);
-  }
+  const importFile = `./data/${fileName}.csv`;
+  console.log(`Importing file: ${importFile}`);
+  preParser.newCollection();
+  fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
+    preParser.have(rowData);
+  }).on('end', async () => { // We are done pulling in data
+    if (await preParser.prepare(knex)) {
+      await dbBuilder.make(preParser.lucidCollectionPreped, knex);
+    }
+    callback();
+  });
 }
 
 module.exports = {
