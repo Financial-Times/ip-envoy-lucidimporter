@@ -1,9 +1,9 @@
 const { preParser } = require('../lib/parser');
 const { dbBuilder } = require('../lib/builder');
-const { isViolateRule } = require('../lib/isViolateRule');
+const { isValidJourneyName } = require('../lib/isValidJourneyName');
 
 module.exports = {
   preParser,
   dbBuilder,
-  isViolateRule
+  isValidJourneyName
 };
