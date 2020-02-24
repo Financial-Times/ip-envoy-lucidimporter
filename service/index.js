@@ -2,7 +2,7 @@ const fs = require('fs');
 const { promisify } = require('util');
 const knex = require('./connect');
 
-const readFile = promisify(fs.readFile);
+const readFile = promisify(fs.readFile); 
 
 async function getDDL(name) {
   return (await readFile(`./service/schema/${name}.ddl`)).toString();
