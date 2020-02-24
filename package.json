@@ -35,11 +35,12 @@
   },
   "dependencies": {
     "@financial-times/n-logger": "^6.0.1",
-    "csv-parser": "^2.3.0",
+    "csv-parser": "^2.3.2",
     "fs": "0.0.1-security",
     "husky": "^2.4.0",
     "knex": "^0.19.5",
     "lodash": "^4.17.10",
+    "path": "^0.12.7",
     "pg": "^7.11.0",
     "snyk": "^1.281.1",
     "util": "^0.12.0",
