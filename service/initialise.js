@@ -10,7 +10,7 @@ const initiateLucidImport = promisify(initiateImport);
 async function initialise() {
   console.debug('*** 1 - build up test database... ***');
   await init();
-  const journeyFilePath = path.resolve(__dirname,'../data/test.csv');
+  const journeyFilePath = path.resolve(__dirname, '../data/test.csv');
   if (await initiateLucidImport(journeyFilePath, knex)) {
     console.debug('*** 4 - New tracks imported ***');
   }

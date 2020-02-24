@@ -1,8 +1,6 @@
 const fs = require('fs');
-const csv = require('csv-parser');
 const { promisify } = require('util');
 const knex = require('./connect');
-const { preParser, dbBuilder } = require('../src');
 
 const readFile = promisify(fs.readFile);
 
@@ -52,26 +50,11 @@ async function init() {
   }
 }
 
-function importFromLucidchart(fileName, callback) {
-  const importFile = `./data/${fileName}.csv`;
-  console.log(`Importing file: ${importFile}`);
-  preParser.newCollection();
-  fs.createReadStream(importFile).pipe(csv()).on('data', (rowData) => {
-    preParser.have(rowData);
-  }).on('end', async () => { // We are done pulling in data
-    if (await preParser.prepare(knex)) {
-      await dbBuilder.make(preParser.lucidCollectionPreped, knex);
-    }
-    callback();
-  });
-}
-
 module.exports = {
   init,
   exists,
   getDDL,
   drop,
   create,
-  seed,
-  importFromLucidchart
+  seed
 };
